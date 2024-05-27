@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>Handwriting Recognition</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+</head>
+<body>
+    <div class="container">
+        <h1 class="mt-5">Handwriting Recognition</h1>
+        <form action="/predict" method="post" enctype="multipart/form-data" class="mt-3">
+            <div class="form-group">
+                <label for="file">Upload an image</label>
+                <input type="file" name="file" class="form-control-file" id="file" required>
+            </div>
+            <button type="submit" class="btn btn-primary">Upload</button>
+        </form>
+        <div class="form-group mt-3">
+            <label for="prediction">Predicted digit</label>
+            <input type="text" class="form-control" id="prediction" value="">
+        </div>
+    </div>
+
+    <script>
+        const form = document.querySelector('form');
+        const predictionInput = document.getElementById('prediction');
+
+        form.addEventListener('submit', function(event) {
+            event.preventDefault();
+
+            const formData = new FormData(form);
+
+            fetch('/predict', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.error) {
+                    alert(data.error);
+                } else {
+                    predictionInput.value = data.prediction;
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Có lỗi xảy ra khi gửi yêu cầu đến server.'); 
+            });
+        });
+    </script>
+</body>
+</html>
