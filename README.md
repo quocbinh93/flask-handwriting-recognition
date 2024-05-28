@@ -4,3 +4,8 @@
 `pip install flask`
 ## Bước 2: Bật terminal của Visual Studio Code ( Ctrl + ` )
 `python app.py`
+## Model: 
+- Model được sử dụng: `mnist_model.h5`
+## Accuracy and Loss: 
+- Accuracy: 99,8%
+- Loss:  0.006%
