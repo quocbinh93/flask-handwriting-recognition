@@ -9,17 +9,17 @@ def preprocess_image(image_path):
     gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
 
     # Làm mịn ảnh bằng Gaussian Blur (giảm nhiễu)
-    gray = cv2.GaussianBlur(gray, (5, 5), 0)
+    gray = cv2.GaussianBlur(gray, (7, 7), 0)
 
-    # Tìm ngưỡng động dựa trên giá trị trung bình của ảnh
-    _, bin_img = cv2.threshold(gray, 127, 255, cv2.THRESH_BINARY_INV)
+    # Tìm ngưỡng bằng Otsu's method (tìm ngưỡng tối ưu tự động)
+    _, bin_img = cv2.threshold(gray, 127, 255, cv2.THRESH_BINARY_INV + cv2.THRESH_OTSU)
 
     # Tìm tất cả các contours
-    contours, hierarchy = cv2.findContours(bin_img, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
+    contours, hierarchy = cv2.findContours(bin_img, cv2.RETR_CCOMP, cv2.CHAIN_APPROX_NONE)
 
     # Lọc contours dựa trên diện tích và tỷ lệ khung hình
-    area_threshold = 50  # Điều chỉnh ngưỡng diện tích tối thiểu
-    aspect_ratio_threshold = 0.2  # Điều chỉnh ngưỡng tỷ lệ khung hình
+    area_threshold = 100  # Giảm ngưỡng diện tích tối thiểu
+    aspect_ratio_threshold = 0.1  # Giảm ngưỡng tỷ lệ khung hình
     filtered_contours = []
     for i, cnt in enumerate(contours):
         if hierarchy[0][i][3] == -1:  # Chỉ lấy contours ngoài cùng
@@ -38,18 +38,18 @@ def preprocess_image(image_path):
     for cnt in filtered_contours:
         x, y, w, h = cv2.boundingRect(cnt)
 
-        # Tạo vùng đệm xung quanh chữ số
-        m = 0.2  # Tỷ lệ phần đệm
+        # Tạo vùng đệm xung quanh chữ số (tăng kích thước vùng đệm)
+        m = 0.4
         roi = bin_img[max(0, y - int(m * h)):y + h + int(m * h), max(0, x - int(m * w)):x + w + int(m * w)]
 
         # Resize ROI về kích thước 28x28
         roi = cv2.resize(roi, (28, 28), interpolation=cv2.INTER_AREA)
 
         # Đảo ngược màu sắc (nền trắng, chữ số đen)
-        roi = cv2.bitwise_not(roi)
+        # roi = cv2.bitwise_not(roi)
 
         digits.append(roi)
         rois.append((x, y, w, h))
         areas.append(area)
 
-    return digits, rois, areas 
+    return digits, rois, areas

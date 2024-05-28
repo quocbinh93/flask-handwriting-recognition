@@ -30,5 +30,5 @@ model = Sequential([
 model.compile(optimizer='adam', loss='categorical_crossentropy', metrics=['accuracy'])
 
 # Huấn luyện mô hình
-model.fit(X_train, y_train, validation_data=(X_test, y_test), epochs=1000, batch_size=200)
+model.fit(X_train, y_train, validation_data=(X_test, y_test), epochs=50, batch_size=200)
 model.save('mnist_model.h5')

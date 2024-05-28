@@ -3,7 +3,6 @@ from tensorflow.keras.models import load_model
 from image_processing import preprocess_image
 import os
 import numpy as np
-from tensorflow.keras import classifation_report
 
 app = Flask(__name__)
 model_path = 'mnist_model.h5'
