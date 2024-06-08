@@ -1,4 +1,4 @@
-# flask_handwriting_recognition
+# Flask Handwriting Recognition
  
 ## Bước 1: Cài đặt flask trên máy
 `pip install flask`
